@@ -1,9 +1,11 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
   UpdateDateColumn,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity('user')
@@ -17,15 +19,24 @@ export class UserEntity {
   @Column({ length: 11 })
   phone: string;
 
-  @Column({ length: 20 })
+  @Exclude()
+  @Column()
   password: string;
 
   @Column({ default: '' })
   avatar: string;
+
+  @Column('simple-enum', { enum: ['admin', 'normal', 'visitor'] })
+  role: string;
 
   @CreateDateColumn()
   create_time: Date;
 
   @UpdateDateColumn()
   update_time: Date;
+
+  // @BeforeInsert()
+  // async encyptPassword() {
+  //   this.password = await this.bcrypt.hashSync(this.password);
+  // }
 }
