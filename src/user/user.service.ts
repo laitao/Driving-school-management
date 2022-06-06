@@ -32,17 +32,12 @@ export class UserService {
 
   // 获取用户列表
   async findAll(query): Promise<PostsRo> {
-    const qb = await getRepository(UserEntity).createQueryBuilder('post');
-    qb.where('1 = 1');
-    qb.orderBy('post.create_time', 'DESC');
-
-    const count = await qb.getCount();
-    const { pageNum = 1, pageSize = 10, ...params } = query;
-    qb.limit(pageSize);
-    qb.offset(pageSize * (pageNum - 1));
-
-    const posts = await qb.getMany();
-    return { list: posts, count: count };
+    const { page = 1, pageSize = 10 } = query;
+    const [list, count] = await this.postsRepository.findAndCount({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    return { list, count };
   }
 
   // 获取指定用户信息
