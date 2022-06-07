@@ -19,7 +19,7 @@ import { UserService } from './user.service';
 @ApiTags('用户')
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
-// @ApiBearerAuth() // swagger文档设置token
+@ApiBearerAuth() // swagger文档设置token后可在线调用
 @UseGuards(AuthGuard('jwt')) // 只有登录后才能访问
 export class UserController {
   constructor(private readonly userService: UserService) {}
