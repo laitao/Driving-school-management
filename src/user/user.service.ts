@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 
 export interface PostsRo {
   list: UserEntity[];
@@ -17,6 +18,7 @@ export class UserService {
   // 创建用户
   async create(post: Partial<UserEntity>): Promise<UserEntity> {
     const { username, phone } = post;
+    console.log(post);
     if (!username) {
       throw new HttpException('请输入用户名', 401);
     }
@@ -25,9 +27,13 @@ export class UserService {
       where: { username, phone },
     });
     if (doc) {
-      throw new HttpException('用户已存在', 401);
+      throw new HttpException('用户已存在', 400);
     }
-    return await this.postsRepository.save(post);
+    const salt = await bcrypt.genSaltSync(10);
+    post.password = await bcrypt.hashSync(post.password, salt);
+    const res = await this.postsRepository.save(post);
+    delete res.password;
+    return res;
   }
 
   // 获取用户列表
@@ -51,7 +57,7 @@ export class UserService {
     const { id } = post;
     const existPost = await this.postsRepository.findOne({ where: { id } });
     if (!existPost) {
-      throw new HttpException(`id为${id}的用户不存在`, 401);
+      throw new HttpException(`id为${id}的用户不存在`, 400);
     }
     const updatePost = this.postsRepository.merge(existPost, post);
     return this.postsRepository.save(updatePost);

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
 import {
   Column,
@@ -6,7 +7,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+interface route {
+  [key: string]: any;
+}
 
 @Entity('user')
 export class UserEntity {
@@ -29,14 +34,21 @@ export class UserEntity {
   @Column('simple-enum', { enum: ['admin', 'normal', 'visitor'] })
   role: string;
 
+  @Column('simple-json', { default: null })
+  routes: route;
+
   @CreateDateColumn()
   create_time: Date;
 
   @UpdateDateColumn()
   update_time: Date;
 
-  // @BeforeInsert()
-  // async encyptPassword() {
-  //   this.password = await this.bcrypt.hashSync(this.password);
-  // }
+  @BeforeInsert()
+  @BeforeUpdate()
+  async encryptPassword() {
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(this.password, salt);
+    this.password = await bcrypt.hashSync(hash);
+    console.log('this.password=', this.password);
+  }
 }
