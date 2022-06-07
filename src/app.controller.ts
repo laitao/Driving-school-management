@@ -9,7 +9,7 @@ import {
   Body,
   Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from 'src/auth/dto/login.dto';
 
@@ -19,7 +19,7 @@ export class AppController {
   constructor(private readonly AppService: AppService) {}
   @UseGuards(AuthGuard('local'))
   @UseInterceptors(ClassSerializerInterceptor)
-  @ApiTags('登陆')
+  @ApiOperation({ summary: '登陆' })
   @Post('login')
   async login(@Body() user: LoginDto, @Req() req) {
     return await this.AppService.login(req.user);
