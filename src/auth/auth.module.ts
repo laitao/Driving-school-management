@@ -16,7 +16,7 @@ const jwtModule: DynamicModule = JwtModule.register({
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), PassportModule, jwtModule],
-  exports: [jwtModule],
+  exports: [jwtModule, AuthService],
   controllers: [AuthController],
   providers: [AuthService, LocalStorage, JwtStorage, UserService],
 })
