@@ -15,8 +15,8 @@ export class AuthService {
     return this.jwtService.sign(user);
   }
 
-  async login(user) {
-    const existUser = await this.UserService.findById(user.id);
+  async login({ id }) {
+    const existUser = await this.UserService.findById(id);
     const token = this.createToken({
       id: existUser.id,
       username: existUser.username,
