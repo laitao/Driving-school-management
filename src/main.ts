@@ -18,10 +18,10 @@ async function bootstrap() {
     }),
   );
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('驾校管理系统Api文档')
+    .setDescription('驾校管理系统Api文档')
     .setVersion('1.0')
-    .addTag('cats')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

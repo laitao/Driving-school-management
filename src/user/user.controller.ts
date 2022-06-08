@@ -7,13 +7,20 @@ import {
   Param,
   Put,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
 @ApiTags('用户')
 @Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth() // swagger文档设置token后可在线调用
+@UseGuards(AuthGuard('jwt')) // 只有登录后才能访问
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @ApiOperation({ summary: '创建用户' })

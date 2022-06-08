@@ -1,16 +1,13 @@
+import { UserService } from './../user/user.service';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { UserService } from './user/user.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
-export class AppService {
+export class AuthService {
   constructor(
     private jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly postsRepository: Repository<UserEntity>,
+    private readonly UserService: UserService,
   ) {}
 
   // 生成token
@@ -18,8 +15,8 @@ export class AppService {
     return this.jwtService.sign(user);
   }
 
-  async login({ id }) {
-    const existUser = await this.postsRepository.findOne({ where: { id } });
+  async login(user) {
+    const existUser = await this.UserService.findById(user.id);
     const token = this.createToken({
       id: existUser.id,
       username: existUser.username,
