@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -20,7 +21,6 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([UserEntity]),
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

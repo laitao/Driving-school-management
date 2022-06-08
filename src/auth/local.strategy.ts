@@ -12,13 +12,13 @@ export class LocalStorage extends PassportStrategy(Strategy) {
     private readonly userRepository: Repository<UserEntity>,
   ) {
     super({
-      usernameField: 'username',
+      usernameField: 'phone',
       passwordField: 'password',
     } as IStrategyOptions);
   }
 
-  async validate(username: string, password: string) {
-    const user = await this.userRepository.findOne({ where: { username } });
+  async validate(phone: string, password: string) {
+    const user = await this.userRepository.findOne({ where: { phone } });
     if (!user) {
       throw new BadRequestException('用户不存在！');
     }

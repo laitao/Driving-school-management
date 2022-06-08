@@ -24,7 +24,7 @@ export class UserService {
     }
     // 用户名和手机号都重复，表示用户存在
     const doc = await this.postsRepository.findOne({
-      where: { username, phone },
+      where: { phone },
     });
     if (doc) {
       throw new HttpException('用户已存在', 400);
@@ -48,7 +48,6 @@ export class UserService {
 
   // 获取指定用户信息
   async findById(id): Promise<UserEntity> {
-    console.log('id===', id);
     return await this.postsRepository.findOne({ where: { id } });
   }
 
