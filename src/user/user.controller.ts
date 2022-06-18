@@ -10,11 +10,13 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
+import { Request } from 'express';
 
 @ApiTags('用户')
 @Controller('user')
@@ -35,6 +37,14 @@ export class UserController {
     console.log('data====', query);
     return await this.userService.findAll(query);
   }
+
+  @ApiOperation({ summary: '获取当前用户信息' })
+  @Get('getCurrentUser')
+  async getCurrentUser(@Req() req: Request) {
+    const { id } = req.user as any;
+    return await this.userService.findById(id);
+  }
+
   @ApiOperation({ summary: '根据ID查找用户' })
   @Get('findById')
   async findById(@Query('id') id) {
